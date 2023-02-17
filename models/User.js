@@ -1,6 +1,6 @@
 class User {
 
-    constructor (name, gender, birth, country, email, photo, admin) {
+    constructor (name, gender, birth, country, email, photo, password, admin) {
 
         this.name = name
         this.gender = gender
@@ -8,6 +8,7 @@ class User {
         this.country = country
         this.email = email 
         this.photo = photo
+        this.password = password
         this.admin = admin
 
     }
