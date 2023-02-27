@@ -53,17 +53,21 @@ class UserController {
 
                     user.loadFromJSON(result)
 
-                    user.save()
+                    user.save().then(user => {
 
-                    this.getTr(user, tr)
+                        this.getTr(user, tr)
 
-                    this.updateCount()
+                        this.updateCount()
 
-                    this.formUpdateEl.reset()
+                        this.formUpdateEl.reset()
 
-                    btn.disabled = false
+                        btn.disabled = false
 
-                    this.showPanelCreate()
+                        this.showPanelCreate()
+
+                    })
+
+                    
 
             }, (e) => {
 
@@ -94,19 +98,22 @@ class UserController {
 
                     values.photo = content
 
-                    values.save()
+                    values.save().then(user => {
 
-                    this.addLine(values)
+                        this.addLine(user)
 
-                    this.formEl.reset()
+                        this.formEl.reset()
 
-                    btn.disabled = false
+                        btn.disabled = false
 
-            }, (e) => {
+                    })
+  
 
-                console.error(e)
+                    }, (e) => {
 
-            })
+                    console.error(e)
+
+                    })
         
         })
 
@@ -209,25 +216,9 @@ class UserController {
 
     selectAll () {
 
-        //let users = User.getUsersStorage()
+        HttpRequest.get('/users').then(data => {
 
-        let ajax = new XMLHttpRequest()
-
-        ajax.open('GET', '/users')
-
-        ajax.onload = event => {
-
-            let obj = { users: [] }
-
-            try {   
-                
-                obj = JSON.parse(ajax.responseText)
-
-            } catch (e) {
-                 console.error(e)
-            }
-
-            obj.users.forEach(dataUser => {
+            data.users.forEach(dataUser => {
 
                 let user = new User()
     
@@ -237,9 +228,7 @@ class UserController {
     
             })
 
-        }
-
-        ajax.send()
+        })
 
     }
 

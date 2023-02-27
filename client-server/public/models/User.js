@@ -71,7 +71,7 @@ class User {
                 break
 
                 default:
-                    this[name] = json[name]
+                   if (name.substring(0, 1) === '_') this[name] = json[name]
 
             }  
 
@@ -109,32 +109,49 @@ class User {
 
     }
 
+    toJSON () {
+
+        let json = {}
+    
+        Object.keys(this).forEach(key => {
+
+            if (this[key] !== undefined) json[key] = this[key]
+
+        })
+
+        return json
+
+    }
+
     save () {
 
-        let users = User.getUsersStorage()
+        new Promise ((resolve, reject) => {
 
-        if (this.id > 0) {
+            let promise
 
-           users.map(u => {
+            if (this.id) {
 
-                if (u._id == this.id) {
+                HttpRequest.put(`/users/${this.id}`, this.toJSON())
 
-                    Object.assign(u, this)
+            } else {
 
-                }
+                HttpRequest.post(`/users/${this.id}`, this.toJSON())
 
-                return u
+            }
 
-           })
+            promise.then(data => {
 
-        } else {
+                this.loadFromJSON(data)
 
-            this._id = this.getNewID()
+                resolve(this)
 
-            users.push(this)
-        }
+            }).catch(e => {
 
-        localStorage.setItem("users", JSON.stringify(users))
+                reject(e)
+
+            })
+
+        })
 
     }
 
